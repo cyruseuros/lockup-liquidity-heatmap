@@ -13,12 +13,16 @@ import cachetools
 TITLE='Post-Lockup Liquidity Heatmap'
 
 app = Dash(
+    __name__,
     title=TITLE,
     external_stylesheets=[
         'https://unpkg.com/@picocss/pico@latest/css/pico.min.css',
         '/assets/style.css',
     ]
 )
+
+# gunicorn entry point
+server = app.server
 
 app.index_string = '''
 <!DOCTYPE html>
@@ -205,4 +209,4 @@ def update_heatmap(selected_figure):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
