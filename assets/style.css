@@ -1,0 +1,15 @@
+.note {
+    padding-left: 2rem;
+}
+
+.stock {
+    align-items: center;
+    justify-items: start;
+}
+
+.tooltip * {
+    margin-top: 0px;
+    padding-top: 0px;
+    margin-bottom: 1px;
+    padding-bottom: 1px;
+}
