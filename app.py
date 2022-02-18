@@ -4,7 +4,7 @@ import dfply as ply
 from dfply import X as x
 import pandas as pd
 import marketbeat
-from dash import Dash, Input, Output, html, dcc
+from dash import Dash, Input, Output, html, dcc, no_update
 from plotly_calplot import calplot
 from plotly import graph_objects as go
 from millify import millify, prettify
@@ -38,13 +38,13 @@ app.index_string = '''
 '''
 
 app.layout = html.Div([
+    html.H1('Post-Lockup Liquidity Heatmap'),
     html.Div([
         html.Div([
-            html.H1('Post-Lockup Liquidity Heatmap'),
             html.Fieldset([
                 dcc.RadioItems(
                     id='offer-size',
-                    value='ipo',
+                    value='curr',
                     options={
                         'ipo': 'IPO Offer Size',
                         'curr': 'Current Offer Size'
@@ -56,6 +56,7 @@ app.layout = html.Div([
             dcc.Graph(
                 id='heatmap',
                 responsive=True,
+                clear_on_unhover=True,
             ),
             dcc.Tooltip(
                 id='tooltip',
@@ -167,32 +168,35 @@ def get_data() -> pd.DataFrame:
     Input('offer-size', 'value')
 )
 def update_heatmap(selected_figure):
-    match selected_figure:
-        case 'ipo': y_metric = 'daily_offer_size'
-        case 'curr': y_metric = 'daily_current_offer_size'
+    try:
+        match selected_figure:
+            case 'ipo': y_metric = 'daily_offer_size'
+            case 'curr': y_metric = 'daily_current_offer_size'
 
-    df = get_data()
+        df = get_data()
 
-    fig = calplot(
-        data=df,
-        x='expiration_date',
-        y=y_metric,
-    )
-
-    layout = go.Layout(
-        yaxis=dict(scaleanchor="x", scaleratio=1),
-        xaxis=dict(
-            range=[
-                min(df['expiration_date'].dt.week) - 1,
-                max(df['expiration_date'].dt.week) + 2,
-            ]
+        fig = calplot(
+            data=df,
+            x='expiration_date',
+            y=y_metric,
         )
-    )
 
-    fig.update_layout(layout)
-    fig.update_traces(hoverinfo="none", hovertemplate=None)
+        layout = go.Layout(
+            yaxis=dict(scaleanchor="x", scaleratio=1),
+            xaxis=dict(
+                range=[
+                    min(df['expiration_date'].dt.week) - 1,
+                    max(df['expiration_date'].dt.week) + 2,
+                ]
+            )
+        )
 
-    return fig
+        fig.update_layout(layout)
+        fig.update_traces(hoverinfo="none", hovertemplate=None)
+
+        return fig
+    except:
+        return no_update
 
 
 if __name__ == '__main__':
