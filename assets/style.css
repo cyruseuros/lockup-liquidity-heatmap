@@ -13,3 +13,7 @@
     margin-bottom: 1px;
     padding-bottom: 1px;
 }
+
+#heatmap {
+    min-height: 450px;
+}
