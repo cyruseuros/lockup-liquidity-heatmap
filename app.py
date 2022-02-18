@@ -10,10 +10,15 @@ from plotly import graph_objects as go
 from millify import millify, prettify
 import cachetools
 
-app = Dash(external_stylesheets=[
-    'https://unpkg.com/@picocss/pico@latest/css/pico.min.css',
-    '/assets/style.css',
-])
+TITLE='Post-Lockup Liquidity Heatmap'
+
+app = Dash(
+    title=TITLE,
+    external_stylesheets=[
+        'https://unpkg.com/@picocss/pico@latest/css/pico.min.css',
+        '/assets/style.css',
+    ]
+)
 
 app.index_string = '''
 <!DOCTYPE html>
@@ -38,7 +43,7 @@ app.index_string = '''
 '''
 
 app.layout = html.Div([
-    html.H1('Post-Lockup Liquidity Heatmap'),
+    html.H1(TITLE),
     html.Div([
         html.Div([
             html.Fieldset([
@@ -200,4 +205,4 @@ def update_heatmap(selected_figure):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
